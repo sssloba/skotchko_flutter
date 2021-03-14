@@ -8,7 +8,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Skotcho',
+      title: 'Skotchko',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         buttonColor: Colors.blue[100],
@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: MyHomePage(title: 'Skotcho'),
+      home: MyHomePage(title: 'Skotchko'),
     );
   }
 }
@@ -126,25 +126,26 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            _getSymbol(),
-            _getSymbol(),
-            _getSymbol(),
-            _getSymbol(),
-            _getSymbol(),
-            _getSymbol(),
-          ],
+          children: [..._getSymbols()],
         ),
       ),
     );
   }
 
-  Widget _getSymbol() {
-    return Container(
-      height: MediaQuery.of(context).size.width / 8,
-      width: MediaQuery.of(context).size.width / 8,
-      color: Colors.blue,
-    );
+  List<Widget> _getSymbols() {
+    List<Widget> symbols = List<Widget>();
+
+    for (int i = 1; i < 7; i++) {
+      symbols.add(GestureDetector(
+        child: Container(
+          height: MediaQuery.of(context).size.width / 8,
+          width: MediaQuery.of(context).size.width / 8,
+          color: Colors.blue,
+          child: _getSymbolString(i.toString()),
+        ),
+      ));
+    }
+    return symbols;
   }
 
   Widget _field() {
@@ -205,6 +206,13 @@ class _MyHomePageState extends State<MyHomePage> {
         height: 0,
         thickness: 2.0,
       ),
+    );
+  }
+
+  Image _getSymbolString(String image) {
+    return Image.asset(
+      'assets/images/$image.png',
+      fit: BoxFit.contain,
     );
   }
 }
