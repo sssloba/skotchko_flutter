@@ -11,6 +11,9 @@ class MyApp extends StatelessWidget {
       title: 'Skotcho',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
+        buttonColor: Colors.blue[100],
+        dividerColor: Colors.blue[100],
+        canvasColor: Colors.blue[900],
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
@@ -29,14 +32,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -44,24 +39,171 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
         centerTitle: true,
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
+      body: SingleChildScrollView(
+        child: Container(
+          height: MediaQuery.of(context).size.height - 150.0,
+          width: MediaQuery.of(context).size.width,
+          child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: RaisedButton(
+                            onPressed: () {},
+                            child: Padding(
+                              padding: const EdgeInsets.all(4.0),
+                              child: Text(
+                                'New Combination',
+                                style: TextStyle(fontSize: 28.0),
+                              ),
+                            )),
+                      ),
+                    ),
+                  ],
+                ),
+                ListView.builder(
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    itemCount: 6,
+                    itemBuilder: (BuildContext context, int index) {
+                      return Padding(
+                        padding: EdgeInsets.all(12.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            _buildFields(),
+                            VerticalDivider(),
+                            _buildCheckFields(),
+                          ],
+                        ),
+                      );
+                    }),
+                _divider(),
+                _buildFields(),
+                _divider(),
+                SizedBox(
+                  height: 16.0,
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Row(children: [
+                    Expanded(
+                      flex: 4,
+                      child: RaisedButton(
+                          onPressed: () {},
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              'CHECK',
+                              style: TextStyle(fontSize: 28.0),
+                            ),
+                          )),
+                    ),
+                    VerticalDivider(),
+                    Expanded(
+                      child: RaisedButton(
+                          onPressed: () {},
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 16.0),
+                            child: Text(
+                              'UNDO',
+                              style: TextStyle(fontSize: 14.0),
+                            ),
+                          )),
+                    ),
+                  ]),
+                ),
+                Expanded(child: SizedBox()),
+              ]),
+        ),
+      ),
+      bottomSheet: Padding(
+        padding: EdgeInsets.all(
+          16.0,
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            _getSymbol(),
+            _getSymbol(),
+            _getSymbol(),
+            _getSymbol(),
+            _getSymbol(),
+            _getSymbol(),
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
+    );
+  }
+
+  Widget _getSymbol() {
+    return Container(
+      height: MediaQuery.of(context).size.width / 8,
+      width: MediaQuery.of(context).size.width / 8,
+      color: Colors.blue,
+    );
+  }
+
+  Widget _field() {
+    return Container(
+      height: MediaQuery.of(context).size.width / 10,
+      width: MediaQuery.of(context).size.width / 10,
+      color: Colors.blue,
+    );
+  }
+
+  Widget _checkField() {
+    return Container(
+      height: MediaQuery.of(context).size.width / 10,
+      width: MediaQuery.of(context).size.width / 10,
+      color: Colors.blue,
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(50.0),
+          color: Colors.black,
+        ),
+        margin: EdgeInsets.all(1.0),
+      ),
+    );
+  }
+
+  Widget _buildFields() {
+    return Expanded(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          _field(),
+          _field(),
+          _field(),
+          _field(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCheckFields() {
+    return Expanded(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          _checkField(),
+          _checkField(),
+          _checkField(),
+          _checkField(),
+        ],
+      ),
+    );
+  }
+
+  Widget _divider() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      child: Divider(
+        height: 0,
+        thickness: 2.0,
       ),
     );
   }
