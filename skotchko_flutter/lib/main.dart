@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:math';
 
 void main() {
   runApp(MyApp());
@@ -33,7 +34,15 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   double _animationValue = 15.0;
+  List<int> _randomCombinationSymbolIndexes = List<int>();
   //Color _animationColor = Colors.red;
+
+  @override
+  void initState() {
+    super.initState();
+    _getRandomCombinationSymbolIndexes();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -74,7 +83,11 @@ class _MyHomePageState extends State<MyHomePage> {
                       child: Padding(
                         padding: const EdgeInsets.all(16.0),
                         child: RaisedButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              setState(() {
+                                _getRandomCombinationSymbolIndexes();
+                              });
+                            },
                             child: Padding(
                               padding: const EdgeInsets.all(4.0),
                               child: Text(
@@ -170,12 +183,14 @@ class _MyHomePageState extends State<MyHomePage> {
     return symbols;
   }
 
-  Widget _field() {
+  Widget _field([int symbolIndex]) {
     return Container(
-      height: MediaQuery.of(context).size.width / 10,
-      width: MediaQuery.of(context).size.width / 10,
-      color: Colors.blue,
-    );
+        height: MediaQuery.of(context).size.width / 10,
+        width: MediaQuery.of(context).size.width / 10,
+        color: Colors.blue,
+        child: symbolIndex == null || symbolIndex < 1 || symbolIndex > 6
+            ? null
+            : _getSymbolString(symbolIndex.toString()));
   }
 
   Widget _checkField() {
@@ -198,10 +213,10 @@ class _MyHomePageState extends State<MyHomePage> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          _field(),
-          _field(),
-          _field(),
-          _field(),
+          _field(_randomCombinationSymbolIndexes[0]),
+          _field(_randomCombinationSymbolIndexes[1]),
+          _field(_randomCombinationSymbolIndexes[2]),
+          _field(_randomCombinationSymbolIndexes[3]),
         ],
       ),
     );
@@ -236,5 +251,12 @@ class _MyHomePageState extends State<MyHomePage> {
       'assets/images/$image.png',
       fit: BoxFit.contain,
     );
+  }
+
+  void _getRandomCombinationSymbolIndexes() {
+    _randomCombinationSymbolIndexes.clear();
+    for (int i = 0; i < 4; i++) {
+      _randomCombinationSymbolIndexes.add(Random().nextInt(6) + 1);
+    }
   }
 }
