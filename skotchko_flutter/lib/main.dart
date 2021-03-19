@@ -32,10 +32,32 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  double _animationValue = 15.0;
+  //Color _animationColor = Colors.red;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: TweenAnimationBuilder(
+          duration: Duration(milliseconds: 15000),
+          tween: Tween<double>(begin: 5.0, end: _animationValue),
+          builder: (BuildContext context, double value, Widget child) {
+            return Container(
+              margin: EdgeInsets.all(value),
+              //color: _animationColor,
+              child: Image.asset(
+                'assets/images/6.png',
+              ),
+            );
+          },
+          onEnd: () {
+            setState(() {
+              _animationValue = _animationValue == 15.0 ? 5.0 : 15.0;
+              // _animationColor =
+              //     _animationColor == Colors.red ? Colors.orange : Colors.red;
+            });
+          },
+        ),
         title: Text(widget.title),
         centerTitle: true,
       ),
