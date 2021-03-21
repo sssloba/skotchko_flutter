@@ -42,10 +42,13 @@ class _MyHomePageState extends State<MyHomePage> {
   int chosenSymbolIndex;
   int rowIndex;
 
+  bool isCheckPressed;
+
   @override
   void initState() {
     super.initState();
     _getRandomCombinationSymbolIndexes();
+    isCheckPressed = false;
     // for (int i = 0; i < 6; i++) {
     //   chosenSymbols.add(List<int>(4));
     //   //chosenSymbols[i].addAll(null);
@@ -137,7 +140,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     Expanded(
                       flex: 4,
                       child: RaisedButton(
-                          onPressed: () {},
+                          onPressed: onCheck,
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Text(
@@ -292,16 +295,25 @@ class _MyHomePageState extends State<MyHomePage> {
   void chooseSymbol(int i) {
     //chosenSymbols.add(List<int>());
 
-    if ((chosenSymbolIndex + 1) % 5 == 0) {
+    if ((chosenSymbolIndex + 1) % 5 == 0 && isCheckPressed) {
       rowIndex++;
       chosenSymbolIndex = 0;
+
+      isCheckPressed = false;
     }
     if (rowIndex < 6) {
-      chosenSymbols[rowIndex][chosenSymbolIndex] = i;
+      if ((chosenSymbolIndex + 1) % 5 != 0) {
+        chosenSymbols[rowIndex][chosenSymbolIndex] = i;
 
-      print(chosenSymbols);
-      chosenSymbolIndex++;
-      setState(() {});
+        print(chosenSymbols);
+        chosenSymbolIndex++;
+        setState(() {});
+      }
     }
+  }
+
+  void onCheck() {
+    isCheckPressed = true;
+    print("check pressed");
   }
 }
