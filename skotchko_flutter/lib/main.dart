@@ -37,10 +37,19 @@ class _MyHomePageState extends State<MyHomePage> {
   List<int> _randomCombinationSymbolIndexes = List<int>();
   //Color _animationColor = Colors.red;
 
+  List<List<int>> chosenSymbols = List<List<int>>();
+
+  int chosenSymbolIndex;
+  int rowIndex;
+
   @override
   void initState() {
     super.initState();
     _getRandomCombinationSymbolIndexes();
+    // for (int i = 0; i < 6; i++) {
+    //   chosenSymbols.add(List<int>(4));
+    //   //chosenSymbols[i].addAll(null);
+    // }
   }
 
   @override
@@ -59,13 +68,13 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             );
           },
-          onEnd: () {
-            setState(() {
-              _animationValue = _animationValue == 15.0 ? 5.0 : 15.0;
-              // _animationColor =
-              //     _animationColor == Colors.red ? Colors.orange : Colors.red;
-            });
-          },
+          // onEnd: () {
+          //   setState(() {
+          //     _animationValue = _animationValue == 15.0 ? 5.0 : 15.0;
+          //     // _animationColor =
+          //     //     _animationColor == Colors.red ? Colors.orange : Colors.red;
+          //   });
+          // },
         ),
         title: Text(widget.title),
         centerTitle: true,
@@ -109,7 +118,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            _buildFields(),
+                            _enterCombination(index),
                             VerticalDivider(),
                             _buildCheckFields(),
                           ],
@@ -117,7 +126,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       );
                     }),
                 _divider(),
-                _buildFields(),
+                _buildRandomCombination(),
                 _divider(),
                 SizedBox(
                   height: 16.0,
@@ -172,6 +181,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
     for (int i = 1; i < 7; i++) {
       symbols.add(GestureDetector(
+        onTap: () => chooseSymbol(i),
         child: Container(
           height: MediaQuery.of(context).size.width / 8,
           width: MediaQuery.of(context).size.width / 8,
@@ -208,7 +218,7 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  Widget _buildFields() {
+  Widget _buildRandomCombination() {
     return Expanded(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -217,6 +227,17 @@ class _MyHomePageState extends State<MyHomePage> {
           _field(_randomCombinationSymbolIndexes[1]),
           _field(_randomCombinationSymbolIndexes[2]),
           _field(_randomCombinationSymbolIndexes[3]),
+        ],
+      ),
+    );
+  }
+
+  Widget _enterCombination(int index) {
+    return Expanded(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          for (int i = 0; i < 4; i++) _field(chosenSymbols[index][i] ?? null)
         ],
       ),
     );
@@ -254,9 +275,33 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _getRandomCombinationSymbolIndexes() {
+    chosenSymbolIndex = 0;
+    rowIndex = 0;
+
     _randomCombinationSymbolIndexes.clear();
     for (int i = 0; i < 4; i++) {
       _randomCombinationSymbolIndexes.add(Random().nextInt(6) + 1);
+    }
+
+    chosenSymbols.clear();
+    for (int i = 0; i < 6; i++) {
+      chosenSymbols.add(List<int>(4));
+    }
+  }
+
+  void chooseSymbol(int i) {
+    //chosenSymbols.add(List<int>());
+
+    if ((chosenSymbolIndex + 1) % 5 == 0) {
+      rowIndex++;
+      chosenSymbolIndex = 0;
+    }
+    if (rowIndex < 6) {
+      chosenSymbols[rowIndex][chosenSymbolIndex] = i;
+
+      print(chosenSymbols);
+      chosenSymbolIndex++;
+      setState(() {});
     }
   }
 }
