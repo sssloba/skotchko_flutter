@@ -35,6 +35,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   double _animationValue = 15.0;
   List<int> _randomCombinationSymbolIndexes = List<int>();
+  List<int> _randomCombinationSymbolCounter = List<int>();
   //Color _animationColor = Colors.red;
 
   List<List<int>> chosenSymbols = List<List<int>>();
@@ -46,15 +47,21 @@ class _MyHomePageState extends State<MyHomePage> {
 
   bool isCheckPressed;
 
+  List<int> tempFullmatch = List<int>();
+  List<int> tempHalfmatch = List<int>();
+
   @override
   void initState() {
     super.initState();
+
     _getRandomCombinationSymbolIndexes();
     isCheckPressed = false;
-    // for (int i = 0; i < 6; i++) {
-    //   chosenSymbols.add(List<int>(4));
-    //   //chosenSymbols[i].addAll(null);
-    // }
+    resetTemp();
+
+    print('RRRR');
+    print(_randomCombinationSymbolCounter);
+    print(tempFullmatch);
+    print(tempHalfmatch);
   }
 
   @override
@@ -279,14 +286,39 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
+  void resetTemp() {
+    tempFullmatch.clear();
+    tempHalfmatch.clear();
+
+    for (int i = 0; i < 6; i++) {
+      tempFullmatch.add(0);
+      tempHalfmatch.add(0);
+    }
+  }
+
+  void resetCombinationCounter() {
+    _randomCombinationSymbolCounter.clear();
+    for (int i = 0; i < 6; i++) {
+      _randomCombinationSymbolCounter.add(0);
+    }
+  }
+
   void _getRandomCombinationSymbolIndexes() {
     chosenSymbolIndex = 0;
     matchSymbolIndex = 0;
     rowIndex = 0;
 
+    resetCombinationCounter();
+
     _randomCombinationSymbolIndexes.clear();
     for (int i = 0; i < 4; i++) {
       _randomCombinationSymbolIndexes.add(Random().nextInt(6) + 1);
+      for (int j = 0; j < 6; j++) {
+        if (j == _randomCombinationSymbolIndexes[i] - 1) {
+          _randomCombinationSymbolCounter[
+              _randomCombinationSymbolIndexes[i] - 1]++;
+        }
+      }
     }
 
     chosenSymbols.clear();
@@ -295,65 +327,90 @@ class _MyHomePageState extends State<MyHomePage> {
     for (int i = 0; i < 6; i++) {
       chosenSymbols.add(List<int>(4));
       matchSymbols.add(List<int>());
-      //print(matchSymbols[i]);
+
       for (int j = 0; j < 4; j++) {
         matchSymbols[i].add(3);
       }
-      //print(matchSymbols[i]);
     }
     print(matchSymbols);
   }
 
   void chooseSymbol(int i) {
-    //chosenSymbols.add(List<int>());
     print(matchSymbols);
     if ((chosenSymbolIndex + 1) % 5 == 0 && isCheckPressed) {
-      // for (int j = 0; j < 4; j++) {
-      //   if (chosenSymbols[rowIndex][j] == _randomCombinationSymbolIndexes[j]) {
-      //     matchSymbols[rowIndex][j] = 1;
-      //   }
-      // }
-
       rowIndex++;
       chosenSymbolIndex = 0;
       matchSymbolIndex = 0;
       isCheckPressed = false;
-      //setState(() {});
     }
     if (rowIndex < 6) {
       if ((chosenSymbolIndex + 1) % 5 != 0) {
         chosenSymbols[rowIndex][chosenSymbolIndex] = i;
-        // matchSymbols[rowIndex][matchSymbolIndex] = 2;
-        //print(chosenSymbols);
+
         chosenSymbolIndex++;
-        //setState(() {});
       }
     }
   }
 
   void onCheck() {
     print("check pressed");
+    int _countHalfMatch = 0;
     if ((chosenSymbolIndex + 1) % 5 == 0) {
-      //bool _matched = false;
+      int fullMatch = 0;
+      int halfMatch = 0;
+
       for (int j = 0; j < 4; j++) {
         if (chosenSymbols[rowIndex][j] == _randomCombinationSymbolIndexes[j]) {
           matchSymbols[rowIndex][j] = 1;
-          //getCheckFieldColor(matchSymbols[rowIndex][j]);
-          //_matched = true;
-          matchSymbolIndex = j + 1;
-        } else if (_randomCombinationSymbolIndexes
-                .any((element) => (element == chosenSymbols[rowIndex][j])) &&
-            matchSymbolIndex <= j) {
-          matchSymbols[rowIndex][j] = 2;
-          matchSymbolIndex = j + 1;
+          tempFullmatch[_randomCombinationSymbolIndexes[j] - 1]++;
+
+          fullMatch++;
+        } else {
+          if ((_randomCombinationSymbolIndexes
+              .any((element) => (element == chosenSymbols[rowIndex][j])))) {
+            if (_randomCombinationSymbolIndexes
+                .contains(chosenSymbols[rowIndex][j])) {
+              tempHalfmatch[chosenSymbols[rowIndex][j] - 1]++;
+            }
+
+            halfMatch++;
+          }
         }
       }
+
+      print(
+          '_randomCombinationSymbolIndexes: $_randomCombinationSymbolIndexes');
+      print('chosenSymbols[rowIndex]: ${chosenSymbols[rowIndex]}');
+
+      print(
+          '_randomCombinationSymbolCounter: $_randomCombinationSymbolCounter');
+      print('fullMatch: $fullMatch');
+      print('halfMatch: $halfMatch');
+
+      matchSymbols[rowIndex].sort();
+
+      for (int i = 0; i < 6; i++) {
+        if (_randomCombinationSymbolCounter[i] > tempFullmatch[i] &&
+            tempHalfmatch[i] > 0) {
+          _countHalfMatch++;
+          // _countHalfMatch +=
+          //     _randomCombinationSymbolCounter[i] - tempFullmatch[i];
+        }
+      }
+
+      for (int i = 0; i < _countHalfMatch; i++) {
+        matchSymbols[rowIndex][fullMatch + i] = 2;
+      }
     }
+    _countHalfMatch = 0;
     matchSymbols[rowIndex].sort();
 
     isCheckPressed = true;
     setState(() {});
     print(matchSymbols);
+    print(tempFullmatch);
+    print(tempHalfmatch);
+    resetTemp();
   }
 
   void checkCombination() {}
