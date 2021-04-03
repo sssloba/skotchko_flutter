@@ -38,8 +38,10 @@ class _MyHomePageState extends State<MyHomePage> {
   //Color _animationColor = Colors.red;
 
   List<List<int>> chosenSymbols = List<List<int>>();
+  List<List<int>> matchSymbols = List<List<int>>();
 
   int chosenSymbolIndex;
+  int matchSymbolIndex;
   int rowIndex;
 
   bool isCheckPressed;
@@ -123,7 +125,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           children: [
                             _enterCombination(index),
                             VerticalDivider(),
-                            _buildCheckFields(),
+                            _buildCheckFields(index),
                           ],
                         ),
                       );
@@ -140,7 +142,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     Expanded(
                       flex: 4,
                       child: RaisedButton(
-                          onPressed: onCheck,
+                          onPressed: () => onCheck(),
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Text(
@@ -184,7 +186,11 @@ class _MyHomePageState extends State<MyHomePage> {
 
     for (int i = 1; i < 7; i++) {
       symbols.add(GestureDetector(
-        onTap: () => chooseSymbol(i),
+        onTap: () {
+          setState(() {
+            chooseSymbol(i);
+          });
+        },
         child: Container(
           height: MediaQuery.of(context).size.width / 8,
           width: MediaQuery.of(context).size.width / 8,
@@ -206,7 +212,7 @@ class _MyHomePageState extends State<MyHomePage> {
             : _getSymbolString(symbolIndex.toString()));
   }
 
-  Widget _checkField() {
+  Widget _checkField(int index, int i) {
     return Container(
       height: MediaQuery.of(context).size.width / 10,
       width: MediaQuery.of(context).size.width / 10,
@@ -214,7 +220,7 @@ class _MyHomePageState extends State<MyHomePage> {
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(50.0),
-          color: Colors.black,
+          color: getCheckFieldColor(matchSymbols[index][i]),
         ),
         margin: EdgeInsets.all(1.0),
       ),
@@ -246,16 +252,12 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  Widget _buildCheckFields() {
+  Widget _buildCheckFields(int index) {
+    print("builded $index");
     return Expanded(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          _checkField(),
-          _checkField(),
-          _checkField(),
-          _checkField(),
-        ],
+        children: [for (int i = 0; i < 4; i++) _checkField(index, i)],
       ),
     );
   }
@@ -279,6 +281,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _getRandomCombinationSymbolIndexes() {
     chosenSymbolIndex = 0;
+    matchSymbolIndex = 0;
     rowIndex = 0;
 
     _randomCombinationSymbolIndexes.clear();
@@ -287,33 +290,88 @@ class _MyHomePageState extends State<MyHomePage> {
     }
 
     chosenSymbols.clear();
+    matchSymbols.clear();
+
     for (int i = 0; i < 6; i++) {
       chosenSymbols.add(List<int>(4));
+      matchSymbols.add(List<int>());
+      //print(matchSymbols[i]);
+      for (int j = 0; j < 4; j++) {
+        matchSymbols[i].add(3);
+      }
+      //print(matchSymbols[i]);
     }
+    print(matchSymbols);
   }
 
   void chooseSymbol(int i) {
     //chosenSymbols.add(List<int>());
-
+    print(matchSymbols);
     if ((chosenSymbolIndex + 1) % 5 == 0 && isCheckPressed) {
+      // for (int j = 0; j < 4; j++) {
+      //   if (chosenSymbols[rowIndex][j] == _randomCombinationSymbolIndexes[j]) {
+      //     matchSymbols[rowIndex][j] = 1;
+      //   }
+      // }
+
       rowIndex++;
       chosenSymbolIndex = 0;
-
+      matchSymbolIndex = 0;
       isCheckPressed = false;
+      //setState(() {});
     }
     if (rowIndex < 6) {
       if ((chosenSymbolIndex + 1) % 5 != 0) {
         chosenSymbols[rowIndex][chosenSymbolIndex] = i;
-
-        print(chosenSymbols);
+        // matchSymbols[rowIndex][matchSymbolIndex] = 2;
+        //print(chosenSymbols);
         chosenSymbolIndex++;
-        setState(() {});
+        //setState(() {});
       }
     }
   }
 
   void onCheck() {
-    isCheckPressed = true;
     print("check pressed");
+    if ((chosenSymbolIndex + 1) % 5 == 0) {
+      //bool _matched = false;
+      for (int j = 0; j < 4; j++) {
+        if (chosenSymbols[rowIndex][j] == _randomCombinationSymbolIndexes[j]) {
+          matchSymbols[rowIndex][j] = 1;
+          //getCheckFieldColor(matchSymbols[rowIndex][j]);
+          //_matched = true;
+          matchSymbolIndex = j + 1;
+        } else if (_randomCombinationSymbolIndexes
+                .any((element) => (element == chosenSymbols[rowIndex][j])) &&
+            matchSymbolIndex <= j) {
+          matchSymbols[rowIndex][j] = 2;
+          matchSymbolIndex = j + 1;
+        }
+      }
+    }
+    matchSymbols[rowIndex].sort();
+
+    isCheckPressed = true;
+    setState(() {});
+    print(matchSymbols);
+  }
+
+  void checkCombination() {}
+
+  Color getCheckFieldColor(int i) {
+    if (i != null) {
+      switch (i) {
+        case 1:
+          return Colors.red;
+        case 2:
+          return Colors.yellow;
+        case 3:
+          return Colors.black;
+        default:
+          return Colors.black;
+      }
+    } else {
+      return Colors.black;
+    }
   }
 }
