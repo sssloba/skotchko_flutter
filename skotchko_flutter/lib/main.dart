@@ -55,8 +55,6 @@ class _MyHomePageState extends State<MyHomePage> {
     super.initState();
 
     _getRandomCombinationSymbolIndexes();
-    isCheckPressed = false;
-    resetTemp();
 
     print('RRRR');
     print(_randomCombinationSymbolCounter);
@@ -161,7 +159,11 @@ class _MyHomePageState extends State<MyHomePage> {
                     VerticalDivider(),
                     Expanded(
                       child: RaisedButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            setState(() {
+                              onUndo();
+                            });
+                          },
                           child: Padding(
                             padding: const EdgeInsets.symmetric(vertical: 16.0),
                             child: Text(
@@ -333,6 +335,8 @@ class _MyHomePageState extends State<MyHomePage> {
       }
     }
     print(matchSymbols);
+    isCheckPressed = false;
+    resetTemp();
   }
 
   void chooseSymbol(int i) {
@@ -349,6 +353,24 @@ class _MyHomePageState extends State<MyHomePage> {
 
         chosenSymbolIndex++;
       }
+    }
+  }
+
+  void onUndo() {
+    if (chosenSymbolIndex > 0 && !isCheckPressed) {
+      print(chosenSymbols);
+      var last;
+      last =
+          chosenSymbols[rowIndex].lastIndexWhere((element) => element != null);
+      chosenSymbols[rowIndex][last] = null;
+
+      print(chosenSymbols);
+      print('last $last');
+      print(chosenSymbolIndex);
+
+      chosenSymbolIndex--;
+
+      print(chosenSymbolIndex);
     }
   }
 
@@ -401,16 +423,16 @@ class _MyHomePageState extends State<MyHomePage> {
       for (int i = 0; i < _countHalfMatch; i++) {
         matchSymbols[rowIndex][fullMatch + i] = 2;
       }
-    }
-    _countHalfMatch = 0;
-    matchSymbols[rowIndex].sort();
+      isCheckPressed = true;
+      _countHalfMatch = 0;
+      matchSymbols[rowIndex].sort();
 
-    isCheckPressed = true;
-    setState(() {});
-    print(matchSymbols);
-    print(tempFullmatch);
-    print(tempHalfmatch);
-    resetTemp();
+      setState(() {});
+      print(matchSymbols);
+      print(tempFullmatch);
+      print(tempHalfmatch);
+      resetTemp();
+    }
   }
 
   void checkCombination() {}
