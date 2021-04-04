@@ -50,6 +50,8 @@ class _MyHomePageState extends State<MyHomePage> {
   List<int> tempFullmatch = List<int>();
   List<int> tempHalfmatch = List<int>();
 
+  bool isGameFinished;
+
   @override
   void initState() {
     super.initState();
@@ -241,10 +243,12 @@ class _MyHomePageState extends State<MyHomePage> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          _field(_randomCombinationSymbolIndexes[0]),
-          _field(_randomCombinationSymbolIndexes[1]),
-          _field(_randomCombinationSymbolIndexes[2]),
-          _field(_randomCombinationSymbolIndexes[3]),
+          for (int i = 0; i < 4; i++)
+            _field(isGameFinished ? _randomCombinationSymbolIndexes[i] : null),
+          // _field(isGameFinished ? _randomCombinationSymbolIndexes[0] : null),
+          // _field(isGameFinished ? _randomCombinationSymbolIndexes[1] : null),
+          // _field(isGameFinished ? _randomCombinationSymbolIndexes[2] : null),
+          // _field(isGameFinished ? _randomCombinationSymbolIndexes[3] : null),
         ],
       ),
     );
@@ -306,6 +310,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _getRandomCombinationSymbolIndexes() {
+    isGameFinished = false;
     chosenSymbolIndex = 0;
     matchSymbolIndex = 0;
     rowIndex = 0;
@@ -341,7 +346,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void chooseSymbol(int i) {
     print(matchSymbols);
-    if ((chosenSymbolIndex + 1) % 5 == 0 && isCheckPressed) {
+    if ((chosenSymbolIndex + 1) % 5 == 0 && isCheckPressed && !isGameFinished) {
       rowIndex++;
       chosenSymbolIndex = 0;
       matchSymbolIndex = 0;
@@ -354,10 +359,16 @@ class _MyHomePageState extends State<MyHomePage> {
         chosenSymbolIndex++;
       }
     }
+    // else {
+    //   setState(() {
+    //     isGameFinished = true;
+    //     print('isGameFinished: $isGameFinished');
+    //   });
+    // }
   }
 
   void onUndo() {
-    if (chosenSymbolIndex > 0 && !isCheckPressed) {
+    if (chosenSymbolIndex > 0 && !isCheckPressed && !isGameFinished) {
       print(chosenSymbols);
       var last;
       last =
@@ -426,8 +437,9 @@ class _MyHomePageState extends State<MyHomePage> {
       isCheckPressed = true;
       _countHalfMatch = 0;
       matchSymbols[rowIndex].sort();
-
+      isGameFinished = fullMatch == 4 || rowIndex == 5;
       setState(() {});
+      print('isGameFinished: $isGameFinished');
       print(matchSymbols);
       print(tempFullmatch);
       print(tempHalfmatch);
