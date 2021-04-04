@@ -58,7 +58,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
     _getRandomCombinationSymbolIndexes();
 
-    print('RRRR');
+    print('init State');
     print(_randomCombinationSymbolCounter);
     print(tempFullmatch);
     print(tempHalfmatch);
@@ -245,10 +245,6 @@ class _MyHomePageState extends State<MyHomePage> {
         children: [
           for (int i = 0; i < 4; i++)
             _field(isGameFinished ? _randomCombinationSymbolIndexes[i] : null),
-          // _field(isGameFinished ? _randomCombinationSymbolIndexes[0] : null),
-          // _field(isGameFinished ? _randomCombinationSymbolIndexes[1] : null),
-          // _field(isGameFinished ? _randomCombinationSymbolIndexes[2] : null),
-          // _field(isGameFinished ? _randomCombinationSymbolIndexes[3] : null),
         ],
       ),
     );
@@ -266,7 +262,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Widget _buildCheckFields(int index) {
-    print("builded $index");
+    // print("builded $index");
     return Expanded(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -359,12 +355,6 @@ class _MyHomePageState extends State<MyHomePage> {
         chosenSymbolIndex++;
       }
     }
-    // else {
-    //   setState(() {
-    //     isGameFinished = true;
-    //     print('isGameFinished: $isGameFinished');
-    //   });
-    // }
   }
 
   void onUndo() {
@@ -423,12 +413,17 @@ class _MyHomePageState extends State<MyHomePage> {
       matchSymbols[rowIndex].sort();
 
       for (int i = 0; i < 6; i++) {
+        int localCounter = 0;
         if (_randomCombinationSymbolCounter[i] > tempFullmatch[i] &&
             tempHalfmatch[i] > 0) {
-          _countHalfMatch++;
-          // _countHalfMatch +=
-          //     _randomCombinationSymbolCounter[i] - tempFullmatch[i];
+          do {
+            _countHalfMatch++;
+            localCounter++;
+          } while (tempFullmatch[i] + localCounter <
+                  _randomCombinationSymbolCounter[i] &&
+              tempHalfmatch[i] > localCounter);
         }
+        localCounter = 0;
       }
 
       for (int i = 0; i < _countHalfMatch; i++) {
