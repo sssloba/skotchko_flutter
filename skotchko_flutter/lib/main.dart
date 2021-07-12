@@ -36,7 +36,7 @@ class _MyHomePageState extends State<MyHomePage> {
   double _animationValue = 15.0;
   List<int> _randomCombinationSymbolIndexes = List<int>();
   List<int> _randomCombinationSymbolCounter = List<int>();
-  //Color _animationColor = Colors.red;
+  Color _animationColor = Colors.red;
 
   List<List<int>> chosenSymbols = List<List<int>>();
   List<List<int>> matchSymbols = List<List<int>>();
@@ -51,6 +51,8 @@ class _MyHomePageState extends State<MyHomePage> {
   List<int> tempHalfmatch = List<int>();
 
   bool isGameFinished;
+
+  final globalKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -67,6 +69,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: globalKey,
       appBar: AppBar(
         leading: TweenAnimationBuilder(
           duration: Duration(milliseconds: 15000),
@@ -74,19 +77,19 @@ class _MyHomePageState extends State<MyHomePage> {
           builder: (BuildContext context, double value, Widget child) {
             return Container(
               margin: EdgeInsets.all(value),
-              //color: _animationColor,
+              color: _animationColor,
               child: Image.asset(
                 'assets/images/6.png',
               ),
             );
           },
-          // onEnd: () {
-          //   setState(() {
-          //     _animationValue = _animationValue == 15.0 ? 5.0 : 15.0;
-          //     // _animationColor =
-          //     //     _animationColor == Colors.red ? Colors.orange : Colors.red;
-          //   });
-          // },
+          onEnd: () {
+            setState(() {
+              _animationValue = _animationValue == 15.0 ? 5.0 : 15.0;
+              _animationColor =
+                  _animationColor == Colors.red ? Colors.orange : Colors.red;
+            });
+          },
         ),
         title: Text(widget.title),
         centerTitle: true,
@@ -149,14 +152,17 @@ class _MyHomePageState extends State<MyHomePage> {
                     Expanded(
                       flex: 4,
                       child: RaisedButton(
-                          onPressed: () => onCheck(),
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(
-                              'CHECK',
-                              style: TextStyle(fontSize: 28.0),
-                            ),
-                          )),
+                        onPressed: () {
+                          onCheck();
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                            'CHECK',
+                            style: TextStyle(fontSize: 28.0),
+                          ),
+                        ),
+                      ),
                     ),
                     VerticalDivider(),
                     Expanded(
@@ -433,6 +439,23 @@ class _MyHomePageState extends State<MyHomePage> {
       _countHalfMatch = 0;
       matchSymbols[rowIndex].sort();
       isGameFinished = fullMatch == 4 || rowIndex == 5;
+      if (isGameFinished)
+        globalKey.currentState.showSnackBar(SnackBar(
+          backgroundColor: Colors.redAccent,
+          margin: EdgeInsets.only(bottom: 350),
+          behavior: SnackBarBehavior.floating,
+          content: Container(
+            height: 250,
+            width: 250,
+            color: Colors.brown,
+            child: Text(
+              'Bravo!',
+              style: TextStyle(color: Colors.orange, fontSize: 32),
+            ),
+          ),
+          duration: Duration(seconds: 4),
+        ));
+
       setState(() {});
       print('isGameFinished: $isGameFinished');
       print(matchSymbols);
