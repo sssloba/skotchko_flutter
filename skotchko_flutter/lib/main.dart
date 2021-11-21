@@ -32,11 +32,15 @@ class MyHomePage extends StatefulWidget {
   _MyHomePageState createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _MyHomePageState extends State<MyHomePage>
+    with SingleTickerProviderStateMixin {
   double _animationValue = 15.0;
   List<int> _randomCombinationSymbolIndexes = List<int>();
   List<int> _randomCombinationSymbolCounter = List<int>();
+  Color _animationColor = Colors.transparent;
   //Color _animationColor = Colors.red;
+
+  AnimationController _controller;
 
   List<List<int>> chosenSymbols = List<List<int>>();
   List<List<int>> matchSymbols = List<List<int>>();
@@ -52,11 +56,17 @@ class _MyHomePageState extends State<MyHomePage> {
 
   bool isGameFinished;
 
+  final globalKey = GlobalKey<ScaffoldState>();
+
   @override
   void initState() {
     super.initState();
 
     _getRandomCombinationSymbolIndexes();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 5000),
+      vsync: this,
+    )..repeat();
 
     print('init State');
     print(_randomCombinationSymbolCounter);
@@ -65,8 +75,15 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: globalKey,
       appBar: AppBar(
         leading: TweenAnimationBuilder(
           duration: Duration(milliseconds: 15000),
@@ -74,26 +91,59 @@ class _MyHomePageState extends State<MyHomePage> {
           builder: (BuildContext context, double value, Widget child) {
             return Container(
               margin: EdgeInsets.all(value),
-              //color: _animationColor,
-              child: Image.asset(
-                'assets/images/6.png',
+              color: _animationColor,
+              child: RotationTransition(
+                turns: Tween(begin: 0.0, end: 1.0).animate(_controller),
+                child: ClipOval(
+                  child: Image.asset(
+                    'assets/sipod/6.png',
+                  ),
+                ),
               ),
             );
           },
-          // onEnd: () {
-          //   setState(() {
-          //     _animationValue = _animationValue == 15.0 ? 5.0 : 15.0;
-          //     // _animationColor =
-          //     //     _animationColor == Colors.red ? Colors.orange : Colors.red;
-          //   });
-          // },
+          onEnd: () {
+            setState(() {
+              _animationValue = _animationValue == 15.0 ? 5.0 : 15.0;
+              // _animationColor =
+              //     _animationColor == Colors.red ? Colors.orange : Colors.red;
+            });
+          },
         ),
+        // leading: TweenAnimationBuilder(
+        //   duration: Duration(milliseconds: 15000),
+        //   tween: Tween<double>(begin: 5.0, end: _animationValue),
+        //   builder: (BuildContext context, double value, Widget child) {
+        //     return Container(
+        //       margin: EdgeInsets.all(value),
+        //       color: _animationColor,
+        //       child: Image.asset(
+        //         'assets/sipod/6.png',
+        //       ),
+        //     );
+        //   },
+        //   onEnd: () {
+        //     setState(() {
+        //       _animationValue = _animationValue == 15.0 ? 5.0 : 15.0;
+        //       _animationColor =
+        //           _animationColor == Colors.red ? Colors.orange : Colors.red;
+        //     });
+        //   },
+        // ),
+        // leading: RotationTransition(
+        //   turns: Tween(begin: 0.0, end: 1.0).animate(_controller),
+        //   child: ClipOval(
+        //     child: Image.asset(
+        //       'assets/sipod/6.png',
+        //     ),
+        //   ),
+        // ),
         title: Text(widget.title),
         centerTitle: true,
       ),
       body: SingleChildScrollView(
         child: Container(
-          height: MediaQuery.of(context).size.height - 150.0,
+          height: MediaQuery.of(context).size.height - 140.0,
           width: MediaQuery.of(context).size.width,
           child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -102,81 +152,83 @@ class _MyHomePageState extends State<MyHomePage> {
                   children: [
                     Expanded(
                       child: Padding(
-                        padding: const EdgeInsets.all(16.0),
+                        padding:
+                            const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 0.0),
                         child: RaisedButton(
                             onPressed: () {
                               setState(() {
                                 _getRandomCombinationSymbolIndexes();
                               });
                             },
-                            child: Padding(
-                              padding: const EdgeInsets.all(4.0),
-                              child: Text(
-                                'New Combination',
-                                style: TextStyle(fontSize: 28.0),
-                              ),
+                            child: Text(
+                              'New Combination',
+                              style: TextStyle(fontSize: 28.0),
                             )),
                       ),
                     ),
                   ],
                 ),
-                ListView.builder(
-                    shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
-                    itemCount: 6,
-                    itemBuilder: (BuildContext context, int index) {
-                      return Padding(
-                        padding: EdgeInsets.all(12.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            _enterCombination(index),
-                            VerticalDivider(),
-                            _buildCheckFields(index),
-                          ],
-                        ),
-                      );
-                    }),
+                Expanded(
+                  flex: 32,
+                  child: ListView.builder(
+                      shrinkWrap: true,
+                      //physics: NeverScrollableScrollPhysics(),
+                      itemCount: 6,
+                      itemBuilder: (BuildContext context, int index) {
+                        return Padding(
+                          padding: EdgeInsets.all(12.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              _enterCombination(index),
+                              VerticalDivider(),
+                              _buildCheckFields(index),
+                            ],
+                          ),
+                        );
+                      }),
+                ),
                 _divider(),
                 _buildRandomCombination(),
                 _divider(),
-                SizedBox(
-                  height: 16.0,
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: Row(children: [
-                    Expanded(
-                      flex: 4,
-                      child: RaisedButton(
-                          onPressed: () => onCheck(),
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(
-                              'CHECK',
-                              style: TextStyle(fontSize: 28.0),
-                            ),
-                          )),
-                    ),
-                    VerticalDivider(),
-                    Expanded(
-                      child: RaisedButton(
+                // SizedBox(
+                //   height: 16.0,
+                // ),
+                Expanded(
+                  flex: 5,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: Row(children: [
+                      Expanded(
+                        flex: 9,
+                        child: RaisedButton(
                           onPressed: () {
-                            setState(() {
-                              onUndo();
-                            });
+                            onCheck();
                           },
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 16.0),
+                          child: Text(
+                            'CHECK',
+                            style: TextStyle(fontSize: 24.0),
+                          ),
+                        ),
+                      ),
+                      Spacer(),
+                      Expanded(
+                        flex: 4,
+                        child: RaisedButton(
+                            onPressed: () {
+                              setState(() {
+                                onUndo();
+                              });
+                            },
                             child: Text(
                               'UNDO',
                               style: TextStyle(fontSize: 14.0),
-                            ),
-                          )),
-                    ),
-                  ]),
+                            )),
+                      ),
+                    ]),
+                  ),
                 ),
-                Expanded(child: SizedBox()),
+                Expanded(flex: 2, child: SizedBox()),
               ]),
         ),
       ),
@@ -240,6 +292,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Widget _buildRandomCombination() {
     return Expanded(
+      flex: 6,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
@@ -283,7 +336,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Image _getSymbolString(String image) {
     return Image.asset(
-      'assets/images/$image.png',
+      'assets/sipod/$image.png',
       fit: BoxFit.contain,
     );
   }
@@ -433,6 +486,58 @@ class _MyHomePageState extends State<MyHomePage> {
       _countHalfMatch = 0;
       matchSymbols[rowIndex].sort();
       isGameFinished = fullMatch == 4 || rowIndex == 5;
+      if (isGameFinished) {
+        globalKey.currentState.showSnackBar(SnackBar(
+          backgroundColor: Colors.white.withOpacity(0.9),
+          margin: EdgeInsets.only(bottom: 250),
+          behavior: SnackBarBehavior.floating,
+          content: GestureDetector(
+            onTap: () => globalKey.currentState.hideCurrentSnackBar(),
+            child: Container(
+              height: 150,
+              width: 50,
+              color: Colors.blue.withOpacity(0.5),
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                        child: SizedBox(
+                          height: 30,
+                          width: 30,
+                          child: ClipOval(
+                            child: Image.asset(
+                              'assets/sipod/6.png',
+                            ),
+                          ),
+                        ),
+                      ),
+                      Text(
+                        fullMatch == 4 ? 'Congratulations!' : 'Bad Luck!',
+                        style: TextStyle(color: Colors.orange, fontSize: 32),
+                      ),
+                    ]),
+                    Text(
+                      fullMatch == 4
+                          ? 'You hit the right combination from the ${rowIndex + 1} attempt'
+                          : 'Please try again',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.orange,
+                        fontSize: 24,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          duration: Duration(seconds: 3),
+        ));
+      }
+
       setState(() {});
       print('isGameFinished: $isGameFinished');
       print(matchSymbols);
