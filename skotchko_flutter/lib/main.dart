@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: MyHomePage(title: 'Skotchko'),
+      home: MyHomePage(title: 'СКОЧКО СТОЈКОВИЋИ'),
     );
   }
 }
@@ -95,10 +95,13 @@ class _MyHomePageState extends State<MyHomePage>
               child: RotationTransition(
                 turns: Tween(begin: 0.0, end: 1.0).animate(_controller),
                 child: ClipOval(
-                  child: Image.asset(
-                    'assets/sipod/6.png',
-                  ),
-                ),
+                    child: Center(
+                  child: Text('C',
+                      style: TextStyle(
+                          color: Colors.red,
+                          fontSize: 32.0,
+                          fontWeight: FontWeight.w700)),
+                )),
               ),
             );
           },
@@ -161,7 +164,7 @@ class _MyHomePageState extends State<MyHomePage>
                               });
                             },
                             child: Text(
-                              'New Combination',
+                              'Нова комбинација',
                               style: TextStyle(fontSize: 28.0),
                             )),
                       ),
@@ -206,7 +209,7 @@ class _MyHomePageState extends State<MyHomePage>
                             onCheck();
                           },
                           child: Text(
-                            'CHECK',
+                            'ПРОВЕРИ',
                             style: TextStyle(fontSize: 24.0),
                           ),
                         ),
@@ -221,7 +224,7 @@ class _MyHomePageState extends State<MyHomePage>
                               });
                             },
                             child: Text(
-                              'UNDO',
+                              'ОБРИШИ',
                               style: TextStyle(fontSize: 14.0),
                             )),
                       ),
@@ -336,8 +339,8 @@ class _MyHomePageState extends State<MyHomePage>
 
   Image _getSymbolString(String image) {
     return Image.asset(
-      'assets/sipod/$image.png',
-      fit: BoxFit.contain,
+      'assets/stojkovici/$image.jpg',
+      fit: BoxFit.cover,
     );
   }
 
@@ -504,25 +507,35 @@ class _MyHomePageState extends State<MyHomePage>
                     Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                        child: SizedBox(
-                          height: 30,
-                          width: 30,
-                          child: ClipOval(
-                            child: Image.asset(
-                              'assets/sipod/6.png',
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(25.0),
+                          child: SizedBox(
+                            height: 50,
+                            width: 50,
+                            child: CircleAvatar(
+                              child: Image.asset(
+                                'assets/stojkovici/6.jpg',
+                                fit: BoxFit.cover,
+                              ),
                             ),
                           ),
                         ),
                       ),
+                      SizedBox(
+                        width: 3.0,
+                      ),
                       Text(
-                        fullMatch == 4 ? 'Congratulations!' : 'Bad Luck!',
+                        fullMatch == 4 ? 'Браво!' : 'Лоша срећа!',
                         style: TextStyle(color: Colors.orange, fontSize: 32),
                       ),
                     ]),
+                    SizedBox(
+                      height: 10,
+                    ),
                     Text(
                       fullMatch == 4
-                          ? 'You hit the right combination from the ${rowIndex + 1} attempt'
-                          : 'Please try again',
+                          ? 'Комбинација погођена из ${rowIndex + 1} покушаја'
+                          : 'Покушај поново',
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         color: Colors.orange,
