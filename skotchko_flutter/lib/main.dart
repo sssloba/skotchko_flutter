@@ -12,7 +12,7 @@ class MyApp extends StatelessWidget {
       title: 'Skotchko',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        buttonColor: Colors.blue[100],
+        //buttonColor: Colors.blue[100],
         dividerColor: Colors.blue[100],
         canvasColor: Colors.blue[900],
         primarySwatch: Colors.blue,
@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
+  MyHomePage({Key? key, required this.title}) : super(key: key);
 
   final String title;
 
@@ -35,26 +35,26 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage>
     with SingleTickerProviderStateMixin {
   double _animationValue = 15.0;
-  List<int> _randomCombinationSymbolIndexes = List<int>();
-  List<int> _randomCombinationSymbolCounter = List<int>();
+  List<int> _randomCombinationSymbolIndexes = <int>[];
+  List<int> _randomCombinationSymbolCounter = <int>[];
   Color _animationColor = Colors.transparent;
   //Color _animationColor = Colors.red;
 
-  AnimationController _controller;
+  late AnimationController _controller;
 
-  List<List<int>> chosenSymbols = List<List<int>>();
-  List<List<int>> matchSymbols = List<List<int>>();
+  List<List<int?>> chosenSymbols = <List<int?>>[];
+  List<List<int>> matchSymbols = <List<int>>[];
 
-  int chosenSymbolIndex;
-  int matchSymbolIndex;
-  int rowIndex;
+  late int chosenSymbolIndex;
+  late int matchSymbolIndex;
+  late int rowIndex;
 
-  bool isCheckPressed;
+  late bool isCheckPressed;
 
-  List<int> tempFullmatch = List<int>();
-  List<int> tempHalfmatch = List<int>();
+  List<int> tempFullmatch = <int>[];
+  List<int> tempHalfmatch = <int>[];
 
-  bool isGameFinished;
+  late bool isGameFinished;
 
   final globalKey = GlobalKey<ScaffoldState>();
 
@@ -88,7 +88,7 @@ class _MyHomePageState extends State<MyHomePage>
         leading: TweenAnimationBuilder(
           duration: Duration(milliseconds: 15000),
           tween: Tween<double>(begin: 5.0, end: _animationValue),
-          builder: (BuildContext context, double value, Widget child) {
+          builder: (BuildContext context, double value, Widget? child) {
             return Container(
               margin: EdgeInsets.all(value),
               color: _animationColor,
@@ -157,7 +157,7 @@ class _MyHomePageState extends State<MyHomePage>
                       child: Padding(
                         padding:
                             const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 0.0),
-                        child: RaisedButton(
+                        child: ElevatedButton(
                             onPressed: () {
                               setState(() {
                                 _getRandomCombinationSymbolIndexes();
@@ -204,7 +204,7 @@ class _MyHomePageState extends State<MyHomePage>
                     child: Row(children: [
                       Expanded(
                         flex: 9,
-                        child: RaisedButton(
+                        child: ElevatedButton(
                           onPressed: () {
                             onCheck();
                           },
@@ -217,7 +217,7 @@ class _MyHomePageState extends State<MyHomePage>
                       Spacer(),
                       Expanded(
                         flex: 4,
-                        child: RaisedButton(
+                        child: ElevatedButton(
                             onPressed: () {
                               setState(() {
                                 onUndo();
@@ -248,7 +248,7 @@ class _MyHomePageState extends State<MyHomePage>
   }
 
   List<Widget> _getSymbols() {
-    List<Widget> symbols = List<Widget>();
+    List<Widget> symbols = <Widget>[];
 
     for (int i = 1; i < 7; i++) {
       symbols.add(GestureDetector(
@@ -268,7 +268,7 @@ class _MyHomePageState extends State<MyHomePage>
     return symbols;
   }
 
-  Widget _field([int symbolIndex]) {
+  Widget _field([int? symbolIndex]) {
     return Container(
         height: MediaQuery.of(context).size.width / 10,
         width: MediaQuery.of(context).size.width / 10,
@@ -384,8 +384,8 @@ class _MyHomePageState extends State<MyHomePage>
     matchSymbols.clear();
 
     for (int i = 0; i < 6; i++) {
-      chosenSymbols.add(List<int>(4));
-      matchSymbols.add(List<int>());
+      chosenSymbols.add(List<int?>.filled(4, null));
+      matchSymbols.add(<int>[]);
 
       for (int j = 0; j < 4; j++) {
         matchSymbols[i].add(3);
@@ -449,7 +449,7 @@ class _MyHomePageState extends State<MyHomePage>
               .any((element) => (element == chosenSymbols[rowIndex][j])))) {
             if (_randomCombinationSymbolIndexes
                 .contains(chosenSymbols[rowIndex][j])) {
-              tempHalfmatch[chosenSymbols[rowIndex][j] - 1]++;
+              tempHalfmatch[chosenSymbols[rowIndex][j]! - 1]++;
             }
 
             halfMatch++;
@@ -490,12 +490,12 @@ class _MyHomePageState extends State<MyHomePage>
       matchSymbols[rowIndex].sort();
       isGameFinished = fullMatch == 4 || rowIndex == 5;
       if (isGameFinished) {
-        globalKey.currentState.showSnackBar(SnackBar(
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           backgroundColor: Colors.white.withOpacity(0.9),
           margin: EdgeInsets.only(bottom: 250),
           behavior: SnackBarBehavior.floating,
           content: GestureDetector(
-            onTap: () => globalKey.currentState.hideCurrentSnackBar(),
+            onTap: () => ScaffoldMessenger.of(context).hideCurrentSnackBar(),
             child: Container(
               height: 150,
               width: 50,
@@ -563,19 +563,15 @@ class _MyHomePageState extends State<MyHomePage>
   void checkCombination() {}
 
   Color getCheckFieldColor(int i) {
-    if (i != null) {
-      switch (i) {
-        case 1:
-          return Colors.red;
-        case 2:
-          return Colors.yellow;
-        case 3:
-          return Colors.black;
-        default:
-          return Colors.black;
-      }
-    } else {
-      return Colors.black;
+    switch (i) {
+      case 1:
+        return Colors.red;
+      case 2:
+        return Colors.yellow;
+      case 3:
+        return Colors.black;
+      default:
+        return Colors.black;
     }
   }
 }
