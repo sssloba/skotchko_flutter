@@ -12,6 +12,7 @@ class MyApp extends StatelessWidget {
       title: 'Skotchko',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
+        useMaterial3: false,
         // buttonColor: Colors.blue[100],
         dividerColor: Colors.blue[100],
         canvasColor: Colors.blue[900],
