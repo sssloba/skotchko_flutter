@@ -13,15 +13,15 @@
       <root url="file://C:/Development/SDKs/flutter/bin/cache/dart-sdk/lib/io" />
       <root url="file://C:/Development/SDKs/flutter/bin/cache/dart-sdk/lib/isolate" />
       <root url="file://C:/Development/SDKs/flutter/bin/cache/dart-sdk/lib/js" />
-      <root url="file://C:/Development/SDKs/flutter/bin/cache/dart-sdk/lib/js_interop" />
-      <root url="file://C:/Development/SDKs/flutter/bin/cache/dart-sdk/lib/js_interop_unsafe" />
       <root url="file://C:/Development/SDKs/flutter/bin/cache/dart-sdk/lib/js_util" />
       <root url="file://C:/Development/SDKs/flutter/bin/cache/dart-sdk/lib/math" />
       <root url="file://C:/Development/SDKs/flutter/bin/cache/dart-sdk/lib/mirrors" />
       <root url="file://C:/Development/SDKs/flutter/bin/cache/dart-sdk/lib/svg" />
       <root url="file://C:/Development/SDKs/flutter/bin/cache/dart-sdk/lib/typed_data" />
+      <root url="file://C:/Development/SDKs/flutter/bin/cache/dart-sdk/lib/wasm" />
       <root url="file://C:/Development/SDKs/flutter/bin/cache/dart-sdk/lib/web_audio" />
       <root url="file://C:/Development/SDKs/flutter/bin/cache/dart-sdk/lib/web_gl" />
+      <root url="file://C:/Development/SDKs/flutter/bin/cache/dart-sdk/lib/web_sql" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

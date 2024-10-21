@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/skotchko_flutter.iml" filepath="$PROJECT_DIR$/.idea/skotchko_flutter.iml" />
+      <module fileurl="file://$PROJECT_DIR$/skotchko_flutter.iml" filepath="$PROJECT_DIR$/skotchko_flutter.iml" />
+      <module fileurl="file://$PROJECT_DIR$/android/skotchko_flutter_android.iml" filepath="$PROJECT_DIR$/android/skotchko_flutter_android.iml" />
     </modules>
   </component>
 </project>
